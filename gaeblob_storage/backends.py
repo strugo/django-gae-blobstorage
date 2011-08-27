@@ -5,9 +5,9 @@ from google.appengine.ext import db
 from gaeblob_storage.models import BlobPropertyFile
 
 class BlobPropertyStorage(Storage):
-    def save(self, name, content):
+    def _save(self, name, content):
         blob = BlobPropertyFile(key_name=name)
-        blob.data = content.read()
+        blob.content = content.read()
         blob.put()
         return name
 
@@ -19,3 +19,6 @@ class BlobPropertyStorage(Storage):
 
     def open(self, name):
         return BlobPropertyFile.get_by_key_name(name)
+
+    def delete(self, name):
+        BlobPropertyFile.get_by_key_name(name).delete()

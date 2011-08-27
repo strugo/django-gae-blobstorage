@@ -8,18 +8,28 @@ class HashPathStorageTest(TestCase):
 
     def setUp(self):
         self.storage = BlobPropertyStorage()
-            
+
+        self.content = 'test content'
+        self.file = ContentFile(self.content)
+        self.name = 'test'
+
     def tearDown(self):
         pass
 
-    def test_save_same_file(self):
-        """
-        saves a file twice, the file should only be stored once, because the
-        content/hash is the same
-        """
-        
-        path_1 = self.storage.save('test', ContentFile('new content'))
-        
-        #path_2 = self.storage.save('test', ContentFile('new content'))
+    def test_save_file(self):
+        path = self.storage.save(self.name, self.file)
+        self.assertEqual(self.name, path)
 
-        self.assertEqual(path_1, 'test')
+    def test_open_file(self):
+        path = self.storage.save(self.name, self.file)
+        self.assertEqual(self.name, path)
+
+        f = self.storage.open(path)
+        self.assertEqual(self.content, f.content)
+        
+    def test_save_same_file(self):
+        path_1 = self.storage.save(self.name, self.file)
+        path_2 = self.storage.save(self.name, self.file)
+
+        self.assertEqual(path_1, self.name)
+        self.assertEqual(path_2, '%s_1'%(self.name))

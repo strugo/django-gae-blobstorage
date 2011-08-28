@@ -1,4 +1,5 @@
 from django.core.files.storage import Storage
+from django.core.urlresolvers import reverse
 
 from google.appengine.ext import db
 
@@ -26,3 +27,6 @@ class BlobPropertyStorage(Storage):
 
     def path(self, name):
         return name.strip()
+
+    def url(self, name):
+        return reverse('gaeblob_serve', kwargs={'key': self.path(name)})

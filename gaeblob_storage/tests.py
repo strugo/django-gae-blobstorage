@@ -4,14 +4,16 @@ from django.core.files.base import ContentFile
 from gaeblob_storage.backends import BlobPropertyStorage
 
 
-class HashPathStorageTest(TestCase):
+class BlobPropertyStorageTest(TestCase):
+    urls = 'gaeblob_storage.urls'
 
     def setUp(self):
         self.storage = BlobPropertyStorage()
 
         self.content = 'test content'
         self.file = ContentFile(self.content)
-        self.name = 'test'
+        self.name = 'test.txt'
+        self.name_1 = 'test_1.txt'
 
     def tearDown(self):
         pass
@@ -48,8 +50,15 @@ class HashPathStorageTest(TestCase):
         path_2 = self.storage.save(self.name, self.file)
 
         self.assertEqual(path_1, self.name)
-        self.assertEqual(path_2, '%s_1'%(self.name))
+        self.assertEqual(path_2, self.name_1)
 
     def test_invalid_file_name(self):
         path =  self.storage.save(' foo  ', self.file)
         self.assertEqual(path, u'foo')
+
+    def test_serve_view(self):
+        path = self.storage.save(self.name, self.file)
+
+        response = self.client.get(self.storage.url(path))
+
+        self.assertEqual(self.content, response.content)

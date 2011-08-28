@@ -3,14 +3,12 @@ import mimetypes
 from django.views.generic import View
 from django.http import HttpResponse, HttpResponseNotFound
 
-from gaeblob_storage.backends import BlobPropertyStorage
-
-blobproperty_storage = BlobPropertyStorage()
+from gaeblob_storage import blobproperty_storage
 
 
 class PropertyFileView(View):
     def get(self, request, *args, **kwargs):
-        content = blobproperty_storage.open(kwargs['key']).content
+        content = blobproperty_storage.open(kwargs['key']).read()
         mimetype = mimetypes.guess_type(content) or "application/x-octet-stream"
 
         if content:

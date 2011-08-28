@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.files.base import ContentFile
 
-from gaeblob_storage.backends import BlobPropertyStorage
+from gaeblob_storage.backends import BlobPropertyStorage, BlobPropertyFile
 
 
 class BlobPropertyStorageTest(TestCase):
@@ -27,7 +27,7 @@ class BlobPropertyStorageTest(TestCase):
         self.assertEqual(self.name, path)
 
         f = self.storage.open(path)
-        self.assertEqual(self.content, f.content)
+        self.assertEqual(self.content, f.read())
 
     def test_open_invalid_file(self):
         f = self.storage.open('foo bar')
@@ -62,3 +62,26 @@ class BlobPropertyStorageTest(TestCase):
         response = self.client.get(self.storage.url(path))
 
         self.assertEqual(self.content, response.content)
+
+class BlobPropertyFileTest(TestCase):
+    def setUp(self):
+        self.content = 'test content'
+        self.name = 'test.txt'
+        
+    def test_init(self):
+        f = BlobPropertyFile(self.name, self.content)
+        self.assertEqual(self.name, f.name)
+        self.assertEqual(self.content, f.blob.content)
+
+    def test_read(self):
+        f = BlobPropertyFile(self.name, self.content)
+        self.assertEqual(self.content, f.read())
+
+    def test_write(self):
+        f = BlobPropertyFile(self.name, '')
+        self.assertNotEqual(self.content, f.read())
+
+        f.write(self.content)
+        self.assertEqual(self.content, f.read())
+
+        

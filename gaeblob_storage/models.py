@@ -1,5 +1,5 @@
 from google.appengine.ext import db
 
 
-class BlobPropertyFile(db.Model):
+class BlobPropertyFileModel(db.Model):
     content = db.BlobProperty()

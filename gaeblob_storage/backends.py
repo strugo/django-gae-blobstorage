@@ -6,19 +6,23 @@ from gaeblob_storage.models import BlobPropertyFile
 
 class BlobPropertyStorage(Storage):
     def _save(self, name, content):
-        blob = BlobPropertyFile(key_name=name)
+        path = self.path(name)
+        blob = BlobPropertyFile(key_name=path)
         blob.content = content.read()
         blob.put()
-        return name
+        return path
 
     def exists(self, name):
-        if BlobPropertyFile.get_by_key_name(name):
+        if BlobPropertyFile.get_by_key_name(self.path(name)):
             return True
         else:
             return False
 
-    def open(self, name):
-        return BlobPropertyFile.get_by_key_name(name)
+    def _open(self, name, mode='rb'):
+        return BlobPropertyFile.get_by_key_name(self.path(name))
 
     def delete(self, name):
-        BlobPropertyFile.get_by_key_name(name).delete()
+        BlobPropertyFile.get_by_key_name(self.path(name)).delete()
+
+    def path(self, name):
+        return name.strip()

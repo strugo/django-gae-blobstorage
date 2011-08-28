@@ -49,3 +49,7 @@ class HashPathStorageTest(TestCase):
 
         self.assertEqual(path_1, self.name)
         self.assertEqual(path_2, '%s_1'%(self.name))
+
+    def test_invalid_file_name(self):
+        path =  self.storage.save(' foo  ', self.file)
+        self.assertEqual(path, u'foo')

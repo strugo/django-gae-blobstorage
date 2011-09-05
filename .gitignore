@@ -1,1 +1,11 @@
-/home/flo/.hgignore
+# use glob syntax.
+syntax: glob
+*.pyc
+*~
+.ropeproject
+\#*\#
+.\#*
+*.orig
+
+static_media
+cache

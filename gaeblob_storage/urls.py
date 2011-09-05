@@ -4,5 +4,5 @@ from gaeblob_storage.views import PropertyFileView
 
 
 urlpatterns = patterns('',
-   url(r'^serve/(?P<key>[\w\.\/]+)/$', PropertyFileView.as_view(), name='gaeblob_serve'),
+   url(r'^serve/(?P<key>[\w\.\/\-_]+)/$', PropertyFileView.as_view(), name='gaeblob_serve'),
 )

@@ -30,7 +30,10 @@ class BlobPropertyStorage(Storage):
         BlobPropertyFileModel.get_by_key_name(self.path(name)).delete()
 
     def path(self, name):
-        return name.strip()
+        name = name.strip()
+        if name.startswith('./'):
+            name = name[2:]
+        return name
 
     def url(self, name):
         return reverse('gaeblob_serve', kwargs={'key': self.path(name)})
